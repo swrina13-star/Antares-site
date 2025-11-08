@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>کانون آنتارس — کانون نجوم و ستاره‌شناسی</title>
+  <meta name="description" content="آنتارس — کانون نجوم؛ برنامه‌ها، تقویم نجومی و عضویت برای دانشجویان و علاقه‌مندان." />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <div class="logo">
+        <img src="logo-placeholder.png" alt="آنتارس" id="site-logo" />
+      </div>
+      <nav class="nav">
+        <a href="#home">خانه</a>
+        <a href="#events">رویدادها</a>
+        <a href="#about">درباره ما</a>
+        <a href="#contact">تماس</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section id="home" class="hero">
+      <div class="container">
+        <h1>آنتارس — با ما آسمان را از نزدیک ببین!</h1>
+        <p>جایی برای دانش، تخیل و کاوش در دنیای ستارگان. به‌ویژه برای دانشجویان و علاقه‌مندان به نجوم.</p>
+        <a class="btn primary" href="#join">عضویت در کانون</a>
+      </div>
+      <div class="star-overlay" aria-hidden="true"></div>
+    </section>
+
+    <section id="events" class="events container">
+      <h2>رویدادهای پیش‌رو</h2>
+      <div id="events-list" class="events-list"></div>
+    </section>
+
+    <section id="about" class="about container">
+      <h2>دربارهٔ آنتارس</h2>
+      <p>کانون آنتارس محلی است برای آموزش و تجربهٔ رصد، اشتراک دانش و برگزاری کارگاه‌های نجومی. ما به برگزاری گشت‌های رصدی، کارگاه‌های عکاسی نجومی و نشست‌های علمی می‌پردازیم.</p>
+      <p>برخی واژگان علمی به کار رفته: Astronomy, Telescope, Observation.</p>
+    </section>
+
+    <section id="join" class="join container">
+      <h2>عضویت</h2>
+      <form id="join-form">
+        <label>نام و نام خانوادگی<input type="text" name="name" required></label>
+        <label>ایمیل<input type="email" name="email" required></label>
+        <label>رشته / علاقه‌مندی<input type="text" name="field"></label>
+        <button class="btn" type="submit">ارسال درخواست</button>
+      </form>
+      <p id="join-msg" role="status"></p>
+    </section>
+
+    <section id="contact" class="contact container">
+      <h2>تماس و شبکه‌های اجتماعی</h2>
+      <p>برای ارتباط: <a href="mailto:contact@antares-club.ir">contact@antares-club.ir</a></p>
+      <div class="socials">
+        <a href="#" aria-label="Instagram">Instagram</a>
+        <a href="#" aria-label="Telegram">Telegram</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>© کانون آنتارس — همه حقوق محفوظ است.</p>
+    </div>
+  </footer>
+
+  <script>
+    // بارگذاری رویدادها از events.json
+    async function loadEvents() {
+      try {
+        const res = await fetch('events.json');
+        const events = await res.json();
+        const list = document.getElementById('events-list');
+        if (!events.length) { list.innerHTML = '<p>رویدادی ثبت نشده.</p>'; return; }
+        list.innerHTML = events.map(ev => `
+          <article class="event-card">
+            <h3>${ev.title}</h3>
+            <p class="meta">${ev.date} — ${ev.location}</p>
+            <p>${ev.description}</p>
+            <button class="btn small" onclick="openRegister('${ev.id}')">ثبت‌نام</button>
+          </article>
+        `).join('');
+      } catch (e) {
+        document.getElementById('events-list').innerHTML = '<p>خطا در بارگذاری رویدادها.</p>';
+        console.error(e);
+      }
+    }
+
+    function openRegister(id) {
+      const name = prompt('نام خود را وارد کنید:');
+      const email = prompt('ایمیل:');
+      if (!name || !email) { alert('نام و ایمیل لازم است.'); return; }
+      alert('ثبت‌نام شما با موفقیت ثبت شد. اطلاعات برای مدیریت لیست ذخیره نشده —برای ذخیره نیاز به سرور دارید.');
+    }
+
+    // فرم عضویت
+    document.getElementById('join-form').addEventListener('submit', function(e){
+      e.preventDefault();
+      const fm = new FormData(e.target);
+      document.getElementById('join-msg').textContent = 'درخواست شما ثبت شد. متشکریم!';
+      e.target.reset();
+    });
+
+    loadEvents();
+  </script>
+</body>
+</html>
